@@ -52,7 +52,8 @@ public class GraphQLProvider {
                         .dataFetcher("bookById", graphQLDataFetchers.getBookByIdDataFetcher()))
                 .type(newTypeWiring("Book")
                         .dataFetcher("author", graphQLDataFetchers.getAuthorDataFetcher())
-                        .dataFetcher("pageCount", graphQLDataFetchers.getPageCountDataFetcher()))
+                        //.dataFetcher("pageCount", graphQLDataFetchers.getPageCountDataFetcher())
+                )
                 .build();
     }
 }
