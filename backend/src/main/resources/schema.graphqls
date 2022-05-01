@@ -1,5 +1,6 @@
 type Query {
   bookById(id: ID): Book
+  bookList: [Book!]!
 }
 
 type Book {
