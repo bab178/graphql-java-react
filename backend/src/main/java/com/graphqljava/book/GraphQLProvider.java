@@ -1,4 +1,4 @@
-package com.graphqljava.tutorial.bookdetails;
+package com.graphqljava.book;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;

@@ -1,4 +1,4 @@
-package com.graphqljava.tutorial.bookdetails;
+package com.graphqljava.book;
 
 import org.junit.jupiter.api.Test;
 
