@@ -9,11 +9,8 @@ interface Props extends OwnProps {
     data: BooksListQuery;
 }
 
-const className = 'BookList';
-
-
-
 const BookList: React.FC<Props> = ({ data }) => {
+    const className = 'BookList';
     const [id, setId] = React.useState<string | undefined>("book-2");
 
     return (
@@ -26,7 +23,7 @@ const BookList: React.FC<Props> = ({ data }) => {
                             book && (
                                 <li
                                     key={i}
-                                    className={`${className}__item${book.id == id ? ' selected' : ''}`}
+                                    className={`${className}__item${book.id === id ? ' selected' : ''}`}
                                     onClick={() => setId(book.id!)}
                                 >
                                     {book.name} by {book.author?.firstName} {book.author?.lastName}
