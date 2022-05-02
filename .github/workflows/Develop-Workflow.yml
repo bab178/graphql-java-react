@@ -2,9 +2,13 @@ name: Develop Workflow
 
 on:
   push:
+      branches:
+      - develop
+      - main
   pull_request:
      branches:
       - develop
+      - main
 
 jobs:
   Build-Frontend-Node:
