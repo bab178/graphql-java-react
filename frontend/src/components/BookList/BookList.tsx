@@ -6,7 +6,7 @@ export interface OwnProps {
 }
 
 interface Props extends OwnProps {
-    data: BooksListQuery;
+    data?: BooksListQuery | undefined;
 }
 
 const BookList: React.FC<Props> = ({ data }) => {
@@ -17,7 +17,7 @@ const BookList: React.FC<Props> = ({ data }) => {
         <div className={className}>
             <h3>List of Books</h3>
             <ol className={`${className}__list`}>
-                {!!data.bookList &&
+                {data?.bookList &&
                     data.bookList.map(
                         (book, i) =>
                             book && (
