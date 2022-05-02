@@ -1,0 +1,85 @@
+name: Develop Workflow
+
+on:
+  push:
+  pull_request:
+     branches:
+      - develop
+
+jobs:
+  Build-Frontend-Node:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 12, 14, 16 ]
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Debug dir
+      run: pwd;ls -l
+
+    - name: Install dependencies
+      run: npm install
+      working-directory: frontend
+
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          */**/node_modules
+        key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+
+    - name: Test
+      run: npm test
+      working-directory: frontend
+
+    - name: Build
+      run: npm run build
+      working-directory: frontend
+
+    # Upload backend artifact on push
+    - uses: actions/upload-artifact@v2
+      if: github.event_name == 'push'
+      with:
+        name: Frontend-Package-Node-${{ matrix.node-version }}
+        path: frontend/build
+
+  Build-Backend-Java:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [ 8 ]
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: 'adopt'
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+        working-directory: backend
+
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+        with:
+          build-root-directory: backend
+          arguments: build
+        
+      # Upload backend artifact on push
+      - uses: actions/upload-artifact@v2
+        if: github.event_name == 'push'
+        with:
+          name: Backend-Package-Java-${{ matrix.java-version }}
+          path: backend/build/libs
