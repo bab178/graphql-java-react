@@ -51,10 +51,10 @@ jobs:
 
   Build-Backend-Java:
     runs-on: ubuntu-latest
-    steps:
     strategy:
       matrix:
         java-version: [ 8 ]
+    steps:
 
       - uses: actions/checkout@v3
 
