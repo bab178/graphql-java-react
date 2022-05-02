@@ -1,4 +1,4 @@
-name: Java CI
+name: Develop Workflow
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
       - develop
 
 jobs:
-  Build-Frontend:
+  Build-Frontend-Node:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -17,6 +17,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+
+    - name: Debug dir
+      run: pwd;ls -l
 
     - name: Install dependencies
       run: npm install
@@ -44,7 +47,7 @@ jobs:
         name: Frontend-Package-Node-${{ matrix.node-version }}
         path: frontend/build
 
-  Build-Backend:
+  Build-Backend-Java:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
