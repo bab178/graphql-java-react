@@ -52,12 +52,16 @@ jobs:
   Build-Backend-Java:
     runs-on: ubuntu-latest
     steps:
+    strategy:
+      matrix:
+        java-version: [ 8 ]
+
       - uses: actions/checkout@v3
 
-      - name: Set up JDK 8
+      - name: Set up JDK ${{ matrix.java-version }}
         uses: actions/setup-java@v2
         with:
-          java-version: '8'
+          java-version: ${{ matrix.java-version }}
           distribution: 'adopt'
 
       - name: Validate Gradle wrapper
@@ -77,5 +81,5 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: github.event_name == 'push'
         with:
-          name: Backend-Package
+          name: Backend-Package-Java-${{ matrix.java-version }}
           path: backend/build/libs
