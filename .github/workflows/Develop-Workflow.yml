@@ -7,7 +7,7 @@ on:
       - develop
 
 jobs:
-  Build Frontend:
+  Build-Frontend:
     runs-on: ubuntu-latest
     steps:
     - name: Use Node.js ${{ matrix.node-version }}
@@ -37,7 +37,7 @@ jobs:
         name: Frontend-Package
         path: frontend/build
 
-  Build Backend:
+  Build-Backend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
