@@ -11,4 +11,7 @@ public interface BookRepository extends MongoRepository<Book, String> {
     @Query("{ 'name' : ?0 }")
     public List<Book> findByName(String name);
 
+    @Query("{ 'pageCount' : ?0 }")
+    public List<Book> findByPageCount(int pageCount);
+
 }

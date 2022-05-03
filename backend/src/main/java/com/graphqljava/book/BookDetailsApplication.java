@@ -29,6 +29,7 @@ public class BookDetailsApplication implements CommandLineRunner {
         // save a couple of books
         bookRepository.save(new Book("book-1", "Alice", 123));
         bookRepository.save(new Book("book-2", "Bob", 456));
+        bookRepository.save(new Book("book-3", "Blake", 123));
 
         // fetch all books
         System.out.println("books found with findAll():");
@@ -39,13 +40,13 @@ public class BookDetailsApplication implements CommandLineRunner {
         System.out.println();
 
         // fetch an individual book
-        System.out.println("book found with findByFirstName('Alice'):");
+        System.out.println("book found with findByName('Alice'):");
         System.out.println("--------------------------------");
         System.out.println(bookRepository.findByName("Alice"));
 
-        System.out.println("books found with findByLastName('Smith'):");
+        System.out.println("books found with findByPageCount(123):");
         System.out.println("--------------------------------");
-        for (Book book : bookRepository.findByName("Smith")) {
+        for (Book book : bookRepository.findByPageCount(123)) {
             System.out.println(book);
         }
 
