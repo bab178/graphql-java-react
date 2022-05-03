@@ -4,10 +4,11 @@ import java.util.List;
 
 import com.graphqljava.book.model.Book;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
 public interface BookRepository extends MongoRepository<Book, String> {
 
-    public Book findByBookId(String id);
-    public List<Book> findByLastName(String lastName);
+    @Query("{ 'name' : ?0 }")
+    public List<Book> findByName(String name);
 
 }

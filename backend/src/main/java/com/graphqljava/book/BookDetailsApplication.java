@@ -27,8 +27,8 @@ public class BookDetailsApplication implements CommandLineRunner {
         bookRepository.deleteAll();
 
         // save a couple of books
-        bookRepository.save(new Book("Alice", 123));
-        bookRepository.save(new Book("Bob", 456));
+        bookRepository.save(new Book("book-1", "Alice", 123));
+        bookRepository.save(new Book("book-2", "Bob", 456));
 
         // fetch all books
         System.out.println("books found with findAll():");
@@ -41,11 +41,11 @@ public class BookDetailsApplication implements CommandLineRunner {
         // fetch an individual book
         System.out.println("book found with findByFirstName('Alice'):");
         System.out.println("--------------------------------");
-        System.out.println(bookRepository.findByBookId("Alice"));
+        System.out.println(bookRepository.findByName("Alice"));
 
         System.out.println("books found with findByLastName('Smith'):");
         System.out.println("--------------------------------");
-        for (Book book : bookRepository.findByLastName("Smith")) {
+        for (Book book : bookRepository.findByName("Smith")) {
             System.out.println(book);
         }
 

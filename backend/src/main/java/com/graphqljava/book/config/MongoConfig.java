@@ -8,6 +8,7 @@ import java.util.List;
 import com.graphqljava.book.converter.BookWriterConverter;
 import com.graphqljava.book.event.BookCascadeSaveMongoEventListener;
 import com.graphqljava.book.event.CascadeSaveMongoEventListener;
+import com.graphqljava.book.model.Book;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -30,7 +31,7 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Override
     protected String getDatabaseName() {
-        return "test";
+        return "book_details";
     }
 
     @Override
@@ -44,7 +45,8 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Override
     public Collection<String> getMappingBasePackages() {
-        return Collections.singleton("com.graphqljava.book");
+        Package mappingBasePackage = Book.class.getPackage();
+        return Collections.singleton(mappingBasePackage == null ? null : mappingBasePackage.getName());
     }
 
     @Bean

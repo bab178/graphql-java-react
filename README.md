@@ -63,7 +63,7 @@ Backend application then uses [GraphQL Providers](./backend/src/main/java/com/gr
 
 Provider wiring example
 
-```{java}
+```java
 private RuntimeWiring buildWiring() {
     return RuntimeWiring.newRuntimeWiring()
             .type(newTypeWiring("Query")
@@ -79,7 +79,7 @@ private RuntimeWiring buildWiring() {
 
 Fetcher example
 
-```{java}
+```java
 public DataFetcher getBookByIdDataFetcher() {
     return dataFetchingEnvironment -> {
         String bookId = dataFetchingEnvironment.getArgument("id");
