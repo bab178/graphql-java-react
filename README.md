@@ -91,3 +91,6 @@ public DataFetcher getBookByIdDataFetcher() {
     };
 }
 ```
+
+Using MongoDb database
+![Database entries](./images/MongoList.png?raw=true)
