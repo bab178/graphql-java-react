@@ -1,4 +1,4 @@
-package com.graphqljava.book.database;
+package com.graphqljava.book.converter;
 
 import com.graphqljava.book.model.Book;
 import com.mongodb.BasicDBObject;

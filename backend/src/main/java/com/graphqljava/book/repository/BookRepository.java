@@ -1,4 +1,4 @@
-package com.graphqljava.book.database;
+package com.graphqljava.book.repository;
 
 import java.util.List;
 
