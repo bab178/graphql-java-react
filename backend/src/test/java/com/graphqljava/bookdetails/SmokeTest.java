@@ -1,4 +1,4 @@
-package com.graphqljava.tutorial.bookdetails;
+package com.graphqljava.bookdetails;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
