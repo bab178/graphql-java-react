@@ -117,7 +117,8 @@ jobs:
       - name: Deploy Bucket
         run: |
           set -eo pipefail
-          aws cloudformation package --template-file ${{ env.template-file }} --s3-bucket ${{ env.BUCKET_NAME}} --output-template-file ${{ env.template-out-file }}
+          cat ${{ env.template-file }}
+          aws cloudformation package --template-file ${{ env.template-file }} --s3-bucket ${{ env.BUCKET_NAME }} --output-template-file ${{ env.template-out-file }}
           aws cloudformation deploy --template-file ${{ env.template-out-file }} --stack-name ${{ env.stack-name }} --capabilities CAPABILITY_NAMED_IAM
         env:
           template-file: backend/template.yml
