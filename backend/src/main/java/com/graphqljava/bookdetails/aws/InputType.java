@@ -28,14 +28,14 @@ public class InputType {
     public String toString() {
         String q = getQuery();
         String qS = q == null ? "no query" : q;
-        
+
         Map<String, Object> v = getVariables();
         String vS = "no variables";
         if (v != null) {
             vS = "";
-            for (Object item : v.entrySet()) {
-                if (item != null && ((String) item).length() > 0) {
-                    vS.concat(item.toString()).concat(",");
+            for (Map.Entry<String, Object> item : v.entrySet()) {
+                if (item != null && item.getKey().length() > 0) {
+                    vS.concat(item.getKey()).concat(":").concat(item.getValue().toString()).concat(", ");
                 }
             }
         }
