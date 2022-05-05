@@ -22,6 +22,8 @@ jobs:
         node-version: [ 12, 14, 16 ]
     steps:
     - uses: actions/checkout@v3
+        with:
+          path: frontend
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
@@ -62,6 +64,8 @@ jobs:
     steps:
 
       - uses: actions/checkout@v3
+        with:
+          path: backend
 
       - name: Set up JDK ${{ env.java-version }}
         uses: actions/setup-java@v2
@@ -96,6 +100,10 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: Backend-Package-Java-${{ env.java-version }}
+
+      - uses: actions/checkout@v3
+        with:
+          path: backend
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
