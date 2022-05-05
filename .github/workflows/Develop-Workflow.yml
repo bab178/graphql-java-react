@@ -12,6 +12,7 @@ on:
 
 env:
   aws-region: us-east-2
+  java-version: 8
 
 jobs:
   Build-Frontend-Node:
@@ -58,17 +59,14 @@ jobs:
 
   Build-Backend-Java:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java-version: [ 8 ]
     steps:
 
       - uses: actions/checkout@v3
 
-      - name: Set up JDK ${{ matrix.java-version }}
+      - name: Set up JDK ${{ env.java-version }}
         uses: actions/setup-java@v2
         with:
-          java-version: ${{ matrix.java-version }}
+          java-version: ${{ env.java-version }}
           distribution: 'adopt'
 
       - name: Validate Gradle wrapper
@@ -88,16 +86,15 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: github.event_name == 'push'
         with:
-          name: Backend-Package-Java-${{ matrix.java-version }}
+          name: Backend-Package-Java-${{ env.java-version }}
           path: backend/build/libs
 
   Deploy-Backend-AWS-Lambda:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        aws-cli-version: [ "2" ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: Backend-Package-Java-${{ env.java-version }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -131,3 +128,4 @@ jobs:
           fi
           aws cloudformation package --template-file $TEMPLATE --s3-bucket $ARTIFACT_BUCKET --output-template-file out.yml
           aws cloudformation deploy --template-file out.yml --stack-name java-basic --capabilities CAPABILITY_NAMED_IAM
+    needs: Build-Backend-Java
