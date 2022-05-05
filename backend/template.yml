@@ -5,10 +5,10 @@ Resources:
   function:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: book-details-0.0.1.zip
-      Handler: com.graphqljava.bookdetails.aws.StreamLambdaHandler
+      CodeUri: com.graphqljava.bookdetails-0.0.1.zip
+      Handler: com.graphqljava.bookdetails.aws.Handler
       Runtime: java8
-      Description: Java function
+      Description: GraphQL Server example
       MemorySize: 512
       Timeout: 10
       # Function's execution role
