@@ -84,7 +84,7 @@ jobs:
         # if: github.event_name == 'push'
         with:
           name: Backend-Package-Java-${{ env.java-version }}
-          path: backend/build/distributions/book-details-0.0.1.zip
+          path: backend/build/distributions/com.graphqljava.bookdetails-0.0.1.zip
           if-no-files-found: error
 
   Deploy-Backend-AWS-Lambda:
