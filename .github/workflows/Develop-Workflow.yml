@@ -87,7 +87,7 @@ jobs:
         # if: github.event_name == 'push'
         with:
           name: Backend-Package-Java-${{ env.java-version }}
-          path: backend/build/libs
+          path: build/distributions/book-details-0.0.1.zip
 
   Deploy-Backend-AWS-Lambda:
     runs-on: ubuntu-latest
