@@ -105,9 +105,6 @@ jobs:
           # role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ env.aws-region }}
 
-      - name: ls
-        run: ls -R
-
       - name: Create Bucket
         run: |
           BUCKET_ID=$(dd if=/dev/random bs=8 count=1 2>/dev/null | od -An -tx1 | tr -d ' \t\n')
@@ -121,6 +118,7 @@ jobs:
           cat ${{ env.template-file }}
           aws cloudformation package --template-file ${{ env.template-file }} --s3-bucket ${{ env.BUCKET_NAME }} --output-template-file ${{ env.template-out-file }}
           aws cloudformation deploy --template-file ${{ env.template-out-file }} --stack-name ${{ env.stack-name }} --capabilities CAPABILITY_NAMED_IAM
+          echo $(aws cloudformation describe-stack-resource --stack-name ${{ env.stack-name }} --logical-resource-id function --query 'StackResourceDetail.PhysicalResourceId' --output text)
         env:
           template-file: backend/template.yml
           template-out-file: backend/out.yml
