@@ -95,6 +95,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: Backend-Package-Java-${{ env.java-version }}
+          path: backend
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
