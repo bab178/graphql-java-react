@@ -115,18 +115,11 @@ jobs:
       - name: Deploy Bucket
         run: |
           set -eo pipefail
-          ARTIFACT_BUCKET=${{ env.BUCKET_NAME }}
-          TEMPLATE=template.yml
-          if [ $1 ]
-          then
-            if [ $1 = mvn ]
-            then
-              TEMPLATE=template-mvn.yml
-              mvn package
-            fi
-          else
-            gradle build -i
-          fi
-          aws cloudformation package --template-file $TEMPLATE --s3-bucket $ARTIFACT_BUCKET --output-template-file out.yml
-          aws cloudformation deploy --template-file out.yml --stack-name java-basic --capabilities CAPABILITY_NAMED_IAM
+          aws cloudformation package --template-file ${{ env.template-file }} --s3-bucket ${{ env.BUCKET_NAME}} --output-template-file ${{ env.template-out-file }}
+          aws cloudformation deploy --template-file ${{ env.template-out-file }} --stack-name ${{ env.stack-name }} --capabilities CAPABILITY_NAMED_IAM
+        env:
+          template-file: template.yml
+          template-out-file: out.yml
+          stack-name: book-details-graphql
+
     needs: Build-Backend-Java
