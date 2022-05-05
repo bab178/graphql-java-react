@@ -1,6 +1,7 @@
-mutation testMutation($orderInput: OrderInput!) {
-  addOrder(newOrder: $orderInput) {
-    amount
-    date
+mutation testMutation($newBook: BookInput!) {
+  addBook(newBook: $newBook) {
+    id
+    name
+    pageCount
   }
 }

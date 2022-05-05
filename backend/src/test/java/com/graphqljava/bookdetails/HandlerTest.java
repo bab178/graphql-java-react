@@ -2,9 +2,12 @@ package com.graphqljava.bookdetails;
 
 import com.graphqljava.bookdetails.aws.Handler;
 import com.graphqljava.bookdetails.aws.InputType;
-import com.graphqljava.bookdetails.input.OrderInput;
+import com.graphqljava.bookdetails.input.BookInput;
+import org.junit.Assert;
 import org.junit.Test;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,9 +18,9 @@ import java.util.Map;
 public class HandlerTest {
 
   @Test
-  public void testGetCustomer() throws Exception {
+  public void testGetBook() throws Exception {
     InputType data = new InputType();
-    data.setQuery(getCustomerJson());
+    data.setQuery(getQueryJson());
 
     Map<String, Object> vars = new HashMap<>();
     vars.put("id", 0);
@@ -27,27 +30,53 @@ public class HandlerTest {
     String res = new Handler().handleRequest(data, null);
 
     System.out.println(res);
+    //Assert.assertTrue(!res.contains("errors"));
   }
 
 
   @Test
-  public void testAddOrder() throws Exception {
+  public void testAddBook() throws Exception {
     InputType data = new InputType();
-    data.setQuery(getOrderJson());
+    data.setQuery(getMutationJson());
+
+    BookInput input = new BookInput();
+    input.setBookId(0);
+    input.setPageCount(123);
+    input.setName("Book Name");
+//    input.setAuthorFirstName("Blake");
+//    input.setAuthorLastName("Bordovsky");
 
     Map<String, Object> vars = new HashMap<>();
-    OrderInput input = new OrderInput();
-    input.setCustomerId(0);
-    input.setAmount(123);
+    vars.put("newBook", getFieldHashmap(input));
 
     data.setVariables(vars);
     String res = new Handler().handleRequest(data, null);
 
     System.out.println(res);
+    //Assert.assertTrue(!res.contains("errors"));
+  }
+
+  private Map<String, Object> getFieldHashmap(Object entity) throws IllegalAccessException, InvocationTargetException {
+    Method[] methods = entity.getClass().getMethods();
+    Map<String, Object> map = new HashMap<String, Object>();
+    for(Method m : methods)
+    {
+      // Find all getters besides getClass
+      if(m.getName().startsWith("get") && m.getName() != "getClass")
+      {
+        Object value = m.invoke(entity);
+        // remove "get" prefix
+        String name = m.getName().substring(3);
+        // lowercase 1st character
+        name = Character.toLowerCase(name.charAt(0)) + name.substring(1);
+        map.put(name, value);
+      }
+    }
+    return map;
   }
 
 
-  private String getCustomerJson() throws Exception {
+  private String getQueryJson() throws Exception {
     URL url = this.getClass().getClassLoader().getResource("query.graphql");
     Path path = Paths.get(url.toURI());
     byte[] fileBytes = Files.readAllBytes(path);
@@ -55,7 +84,7 @@ public class HandlerTest {
     return new String(fileBytes);
   }
 
-  private String getOrderJson() throws Exception {
+  private String getMutationJson() throws Exception {
     URL url = this.getClass().getClassLoader().getResource("mutation.graphql");
     Path path = Paths.get(url.toURI());
     byte[] fileBytes = Files.readAllBytes(path);

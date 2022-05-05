@@ -4,29 +4,25 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.coxautodev.graphql.tools.GraphQLMutationResolver;
-import com.graphqljava.bookdetails.input.OrderInput;
-import com.graphqljava.bookdetails.models.Customer;
-import com.graphqljava.bookdetails.models.Order;
-import org.joda.time.DateTime;
+import com.graphqljava.bookdetails.input.BookInput;
+import com.graphqljava.bookdetails.models.Book;
 
 public class MutationResolver implements GraphQLMutationResolver {
 
+  public Book addBook(BookInput newBook) {
+    Book b = getDB().load(Book.class, newBook.getBookId());
 
-  public Order addOrder(OrderInput newOrder) {
-    Customer c = getDB().load(Customer.class, newOrder.getCustomerId());
+//    Author a = new Author();
+//
+//    a.setFirstName(newBook.getAuthorFirstName());
+//    a.setLastName(newBook.getAuthorLastName());
+//
+//    b.setAuthor(a);
 
-    Order o = new Order();
+    getDB().save(b);
 
-    o.setAmount(newOrder.getAmount());
-    o.setDate(DateTime.now().toDateTimeISO().toString());
-
-    c.getOrders().add(o);
-
-    getDB().save(c);
-
-    return o;
+    return b;
   }
-
 
   private DynamoDBMapper getDB() {
     AmazonDynamoDBClientBuilder builder = AmazonDynamoDBClientBuilder.standard();

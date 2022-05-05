@@ -1,10 +1,6 @@
-query testQuery($id: Int!) {
-  getCustomer(id: $id) {
-    id
+query testQuery($id: ID) {
+    bookById(id: $id) {
     name
-
-    orders {
-        date
-   }
+    pageCount
   }
 }

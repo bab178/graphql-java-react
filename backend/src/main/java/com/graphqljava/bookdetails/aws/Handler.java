@@ -10,9 +10,6 @@ import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Handler {
 
   private GraphQLSchema schema;
