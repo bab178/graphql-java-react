@@ -10,6 +10,10 @@ on:
       - develop
       - main
 
+env:
+  aws-region: us-east-2
+  java-version: 8
+
 jobs:
   Build-Frontend-Node:
     runs-on: ubuntu-latest
@@ -17,55 +21,49 @@ jobs:
       matrix:
         node-version: [ 12, 14, 16 ]
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Debug dir
-      run: pwd;ls -l
+      - name: Install dependencies
+        run: npm install
+        working-directory: frontend
 
-    - name: Install dependencies
-      run: npm install
-      working-directory: frontend
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            */**/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
 
-    - name: Cache dependencies
-      uses: actions/cache@v2
-      with:
-        path: |
-          */**/node_modules
-        key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Test
+        run: npm test
+        working-directory: frontend
 
-    - name: Test
-      run: npm test
-      working-directory: frontend
+      - name: Build
+        run: npm run build
+        working-directory: frontend
 
-    - name: Build
-      run: npm run build
-      working-directory: frontend
-
-    # Upload backend artifact on push
-    - uses: actions/upload-artifact@v2
-      if: github.event_name == 'push'
-      with:
-        name: Frontend-Package-Node-${{ matrix.node-version }}
-        path: frontend/build
+      # Upload backend artifact on push
+      - uses: actions/upload-artifact@v2
+        if: github.event_name == 'push'
+        with:
+          name: Frontend-Package-Node-${{ matrix.node-version }}
+          path: frontend/build
 
   Build-Backend-Java:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java-version: [ 8 ]
     steps:
 
       - uses: actions/checkout@v3
 
-      - name: Set up JDK ${{ matrix.java-version }}
+      - name: Set up JDK ${{ env.java-version }}
         uses: actions/setup-java@v2
         with:
-          java-version: ${{ matrix.java-version }}
+          java-version: ${{ env.java-version }}
           distribution: 'adopt'
 
       - name: Validate Gradle wrapper
@@ -80,10 +78,50 @@ jobs:
         with:
           build-root-directory: backend
           arguments: build
-        
+
       # Upload backend artifact on push
       - uses: actions/upload-artifact@v2
-        if: github.event_name == 'push'
+        # if: github.event_name == 'push'
         with:
-          name: Backend-Package-Java-${{ matrix.java-version }}
-          path: backend/build/libs
+          name: Backend-Package-Java-${{ env.java-version }}
+          path: backend/build/distributions/com.graphqljava.bookdetails-0.0.1.zip
+          if-no-files-found: error
+
+  Deploy-Backend-AWS-Lambda:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: Backend-Package-Java-${{ env.java-version }}
+          path: backend
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          # role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.aws-region }}
+
+      - name: Create Bucket
+        run: |
+          BUCKET_ID=$(dd if=/dev/random bs=8 count=1 2>/dev/null | od -An -tx1 | tr -d ' \t\n')
+          BUCKET_NAME=lambda-artifacts-$BUCKET_ID
+          echo "BUCKET_NAME=$(echo $BUCKET_NAME)" >> $GITHUB_ENV
+          aws s3 mb s3://$BUCKET_NAME
+
+      - name: Deploy Bucket
+        run: |
+          set -eo pipefail
+          cat ${{ env.template-file }}
+          aws cloudformation package --template-file ${{ env.template-file }} --s3-bucket ${{ env.BUCKET_NAME }} --output-template-file ${{ env.template-out-file }}
+          aws cloudformation deploy --template-file ${{ env.template-out-file }} --stack-name ${{ env.stack-name }} --capabilities CAPABILITY_NAMED_IAM
+          echo $(aws cloudformation describe-stack-resource --stack-name ${{ env.stack-name }} --logical-resource-id function --query 'StackResourceDetail.PhysicalResourceId' --output text)
+        env:
+          template-file: backend/template.yml
+          template-out-file: backend/out.yml
+          stack-name: book-details-graphql
+
+    needs: Build-Backend-Java

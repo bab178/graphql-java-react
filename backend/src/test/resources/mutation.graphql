@@ -1,0 +1,7 @@
+mutation testMutation($newBook: BookInput!) {
+  addBook(newBook: $newBook) {
+    id
+    name
+    pageCount
+  }
+}

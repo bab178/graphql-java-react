@@ -1,0 +1,6 @@
+query testQuery($id: ID) {
+    bookById(id: $id) {
+    name
+    pageCount
+  }
+}

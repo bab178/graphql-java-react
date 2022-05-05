@@ -1,38 +1,43 @@
-buildscript {
-	ext {
-		springBootVersion = '2.6.7.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
-}
-
-
 plugins {
-	id 'org.springframework.boot' version '2.6.7'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'java'
+    id 'java'
+    id 'maven-publish'
 }
-
-group = 'com.example'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
 
 repositories {
-	mavenCentral()
+    mavenLocal()
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2/')
+    }
 }
 
 dependencies {
-	implementation 'com.graphql-java:graphql-java:18.0'
-	implementation 'com.graphql-java:graphql-java-spring-boot-starter-webmvc:2.0'
-	implementation 'com.google.guava:guava:31.1-jre'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'com.graphql-java:graphql-java:7.0'
+    implementation 'com.graphql-java:graphql-java-tools:4.3.0'
+    implementation 'com.amazonaws:aws-lambda-java-core:1.2.0'
+    implementation 'com.amazonaws:aws-java-sdk-dynamodb:1.11.280'
+    implementation 'com.google.code.gson:gson:2.8.2'
+    testImplementation 'junit:junit:4.12'
 }
 
-tasks.withType(Test) {
-	useJUnitPlatform()
+group = 'com.graphqljava'
+version = '0.0.1'
+description = 'bookdetails'
+java.sourceCompatibility = JavaVersion.VERSION_1_8
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
 }
+
+task buildZip(type: Zip) {
+	from compileJava
+	from processResources
+	into('lib') {
+		from configurations.runtimeClasspath
+	}
+}
+
+build.dependsOn buildZip
