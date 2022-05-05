@@ -19,7 +19,7 @@ public class Handler implements RequestHandler<InputType, String> {
   public String handleRequest(InputType input, Context context) {
     init();
 
-    Logger.logMsg(Logger.INFO, input.toString());
+    System.out.println(input.toString());
 
     ExecutionInput exec = ExecutionInput.newExecutionInput()
       .query(input.getQuery())
