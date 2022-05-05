@@ -81,13 +81,14 @@ jobs:
         with:
           build-root-directory: backend
           arguments: build
-        
+
       # Upload backend artifact on push
       - uses: actions/upload-artifact@v2
         # if: github.event_name == 'push'
         with:
           name: Backend-Package-Java-${{ env.java-version }}
-          path: build/distributions/book-details-0.0.1.zip
+          path: backend/build/distributions/book-details-0.0.1.zip
+          if-no-files-found: error
 
   Deploy-Backend-AWS-Lambda:
     runs-on: ubuntu-latest
