@@ -20,7 +20,7 @@ dependencies {
 }
 
 group = 'com.graphqljava'
-version = '1.0.0'
+version = '0.0.1'
 description = 'bookdetails'
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
@@ -31,3 +31,13 @@ publishing {
         }
     }
 }
+
+task buildZip(type: Zip) {
+	from compileJava
+	from processResources
+	into('lib') {
+		from configurations.runtimeClasspath
+	}
+}
+
+build.dependsOn buildZip
