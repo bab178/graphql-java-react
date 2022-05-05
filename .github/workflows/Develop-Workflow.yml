@@ -84,7 +84,7 @@ jobs:
         
       # Upload backend artifact on push
       - uses: actions/upload-artifact@v2
-        if: github.event_name == 'push'
+        # if: github.event_name == 'push'
         with:
           name: Backend-Package-Java-${{ env.java-version }}
           path: backend/build/libs
