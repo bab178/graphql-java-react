@@ -118,8 +118,8 @@ jobs:
           aws cloudformation package --template-file ${{ env.template-file }} --s3-bucket ${{ env.BUCKET_NAME}} --output-template-file ${{ env.template-out-file }}
           aws cloudformation deploy --template-file ${{ env.template-out-file }} --stack-name ${{ env.stack-name }} --capabilities CAPABILITY_NAMED_IAM
         env:
-          template-file: template.yml
-          template-out-file: out.yml
+          template-file: backend/template.yml
+          template-out-file: backend/out.yml
           stack-name: book-details-graphql
 
     needs: Build-Backend-Java
