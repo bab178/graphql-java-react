@@ -104,6 +104,9 @@ jobs:
           # role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ env.aws-region }}
 
+      - name: ls
+        run: ls -R
+
       - name: Create Bucket
         run: |
           BUCKET_ID=$(dd if=/dev/random bs=8 count=1 2>/dev/null | od -An -tx1 | tr -d ' \t\n')
