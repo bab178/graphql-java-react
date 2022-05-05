@@ -1,6 +1,7 @@
 package com.graphqljava.bookdetails.aws;
 
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.coxautodev.graphql.tools.SchemaParser;
 import com.coxautodev.graphql.tools.SchemaParserBuilder;
 import com.graphqljava.bookdetails.resolvers.MutationResolver;
@@ -10,11 +11,10 @@ import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
 
-public class Handler {
+public class Handler implements RequestHandler<InputType, String> {
 
   private GraphQLSchema schema;
-
-
+  @Override
   public String handleRequest(InputType input, Context context) {
     init();
 
